@@ -54,15 +54,34 @@
       d3.csv('data/linkedin-data.csv', function (error, data) {
       
       	console.log(data);
+      	data.sort(function compare(a,b) {
+  if (a.interestLevel < b.interestLevel)
+    return -1;
+  else if (a.interestLevel > b.interestLevel)
+    return 1;
+  else 
+    return 0;
+})
+		//data = data.slice(0,10);
+		data.forEach( function (D) {
+			var foo = {};
+			foo.interestLevel = D.interestLevel;
+			foo.user = D.interestedIn;
+			foo.interestedIn = D.user;
+			data.push(foo);
+		});
         var mpr = chordMpr(data);
       	
         mpr
           .addValuesToMap('user')
-          .addValuesToMap('interestedIn')
+          //.addValuesToMap('interestedIn')
           .setFilter(function (row, a, b) {
           	//console.log('setFilter');
           	//console.log([row, a, b]);
-            return (row.user === a.name && row.interestedIn === b.name)
+            return (
+            	(row.user === a.name && row.interestedIn === b.name) ||
+            	(row.user === b.name && row.interestedIn === a.name)
+            	)
           })
           .setAccessor(function (recs, a, b) {
           	//console.log('setAccessor');
